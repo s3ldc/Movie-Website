@@ -16,5 +16,10 @@ function MovieCard({movie}){
                 </button>
             </div>
         </div>
+
+        <div className="movie-info">
+            <h3>{movie.title}</h3>
+            <p>{movie.release_date}</p>
+        </div>
     </div>
 }
