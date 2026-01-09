@@ -13,7 +13,9 @@ function Home() {
     { id: 5, title: "Pulp Fiction", release_date: "1994" },
   ];
 
-  const handleSearch = () => {};
+  const handleSearch = () => {
+    alert(searchQuery);
+  };
 
   return (
     <div className="home">
@@ -30,7 +32,7 @@ function Home() {
 
       <div className="movies-grid">
         {movies.map((movie) => (
-          <MovieCard movie={movie} key={movie.id} />
+          movie.title.toLowerCase().startsWith(searchQuery) && <MovieCard movie={movie} key={movie.id} />
         ))}
       </div>
     </div>
