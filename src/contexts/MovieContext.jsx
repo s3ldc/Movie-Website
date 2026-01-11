@@ -1,43 +1,41 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect } from "react";
 
 const MovieContext = createContext();
 
 export const useMovieContext = () => useContext(MovieContext);
 
-export const MovieProvider = ({children}) => {
+export const MovieProvider = ({ children }) => {
+  const [favorites, setFavorites] = useState(() => {
+    const stored = localStorage.getItem("favorites");
+    return stored ? JSON.parse(stored) : [];
+  });
 
-    const [favorites, setFavorites] = useState([]);
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
 
-    useEffect(() => {
-        const storedFavorites = localStorage.getItem("favorites");
+  const addToFavorites = (movie) => {
+    setFavorites((prev) =>
+      prev.some((m) => m.id === movie.id) ? prev : [...prev, movie]
+    );
+  };
 
-        if(storedFavorites) setFavorites(JSON.parse(storedFavorites));
-    }, []);
+  const removeFromFavorites = (movieId) => {
+    setFavorites((prev) => prev.filter((movie) => movie.id !== movieId));
+  };
 
-    useEffect(() => {
-        localStorage.setItem("favorites", JSON.stringify(favorites));
-    }, [favorites]);
+  const isFavorites = (movieId) => {
+    return favorites.some((movie) => movie.id === movieId);
+  };
 
-    const addToFavorites = (movie) => {
-        setFavorites(prev => [...prev, movie]);
-    }
+  const value = {
+    favorites,
+    addToFavorites,
+    removeFromFavorites,
+    isFavorites,
+  };
 
-    const removeFromFavorites = (movieId) => {
-        setFavorites(prev => prev.filter(movie => movie.id !== movieId));
-    }
-
-    const isFavorites = (movieId) => {
-        return favorites.some(movie => movie.id === movieId);
-    }
-
-    const value = {
-        favorites,
-        addToFavorites,
-        removeFromFavorites,
-        isFavorites
-    }
-
-    return <MovieContext.Provider value={value}>
-        {children}
-    </MovieContext.Provider>
-}
+  return (
+    <MovieContext.Provider value={value}>{children}</MovieContext.Provider>
+  );
+};
