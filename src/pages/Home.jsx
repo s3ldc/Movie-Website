@@ -25,7 +25,8 @@ function Home() {
     loadPopularMovies();
   }, []);
 
-  const handleSearch = async() => {
+  const handleSearch = async(e) => {
+    e.preventDefault();
     if (!searchQuery.trim()) return;
     if(loading) return;
     setLoading(true);
